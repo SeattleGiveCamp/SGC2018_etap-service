@@ -17,7 +17,6 @@ router.get('/api/v1/litter/:id', (req,res) => {
     litter.findOne({siteName:req.params.id})
       .then(data => {
         if(data){
-          console.log('hello', data);
           res.send(data);
         }
         else{
