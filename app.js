@@ -4,7 +4,7 @@
 import express from 'express';
 //import morgan from 'morgan';
 import cors from 'cors';
-
+import session from 'express-session';
 // Our modules
 import router from './api/api';
 const app = express();
@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 //app.use(morgan());
 app.use(cors());
+app.use(session({ secret: 'passport-tutorial', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 // Our API
 app.use(router);
 let server = false;
