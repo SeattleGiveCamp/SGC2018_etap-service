@@ -1,5 +1,6 @@
 'use strict';
 import express from 'express';
+var path = require('path');
 const router = express.Router();
 import litter from '../models/litter.js';
 
@@ -7,11 +8,14 @@ router.get('/api/v1/litter', (req,res) => {
   litter.find()
     .then( data => res.send(data))
     .catch( err => {
-      res.send('Try posting some data'); 
+      res.send(`${err}: Try posting some data  `); 
     }); 
 });
 router.get('/api/v1/hello', (req,res) => {
   res.send('hello');
+});
+router.get('/', (req,res) => {
+  res.sendFile(path.join(__dirname +'/index.html'));
 });
 
 router.post('/api/v1/litter', (req,res) => {
