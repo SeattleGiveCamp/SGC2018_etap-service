@@ -7,8 +7,7 @@ router.get('/api/v1/litter', (req,res) => {
   litter.find()
     .then( data => res.send(data))
     .catch( err => {
-      res.status(404);
-      res.send(err); 
+      res.send('Try posting some data'); 
     }); 
 });
 router.get('/api/v1/hello', (req,res) => {
