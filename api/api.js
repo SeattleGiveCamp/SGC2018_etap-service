@@ -11,9 +11,34 @@ router.get('/api/v1/litter', (req,res) => {
       res.send(`${err}: Try posting some data  `); 
     }); 
 });
+
+router.get('/api/v1/litter/:id', (req,res) => {
+  if (req.params.id!==null) {
+    litter.findOne({siteName:req.params.id})
+      .then(data => {
+        if(data){
+          console.log('hello', data);
+          res.send(data);
+        }
+        else{
+          res.send('No record found!!');
+        }
+
+      })
+      .catch(err => {
+        
+        res.status(404);
+        res.send(err);});
+  }
+  else if (req.params.id === undefined) {
+    res.status(400);
+    res.send('Bad Request: No query params recieved');
+  }
+});
 router.get('/api/v1/hello', (req,res) => {
   res.send('hello');
 });
+
 router.get('/', (req,res) => {
   res.sendFile(path.join(__dirname +'/index.html'));
 });

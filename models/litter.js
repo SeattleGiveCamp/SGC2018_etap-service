@@ -8,7 +8,7 @@ const litterSchema = mongoose.Schema({
   weightAssessment: {type:Object},
   landUse: {type: Object},
   categories: {type:Object},
-  habitatInformation: {type: String},
+  habitatInformation: {type: Object},
   generalObservation: {type: String},
   
 });
