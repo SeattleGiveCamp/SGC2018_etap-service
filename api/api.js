@@ -85,8 +85,7 @@ router.post('/login', auth.optional, (req, res, next) => {
     return status(400).info;
   })(req, res, next);
 });
-// create user (DO NOT USE IN PROD)
-router.post('/user', auth.optional, (req, res, next) => {
+router.post('/user', auth.required, (req, res, next) => {
   const { body: { user } } = req;
   if(!user) {
     return res.status(422).json({
