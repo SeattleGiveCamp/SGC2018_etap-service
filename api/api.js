@@ -1,5 +1,11 @@
 'use strict';
 import express from 'express';
+import auth from '../routes/auth';
+import passport from 'passport';
+import mongoose from 'mongoose';
+
+const Users = mongoose.model('Users');
+
 var path = require('path');
 const router = express.Router();
 import litter from '../models/litter.js';
@@ -18,7 +24,7 @@ router.get('/', (req,res) => {
   res.sendFile(path.join(__dirname +'/index.html'));
 });
 
-router.post('/api/v1/litter', (req,res) => {
+router.post('/api/v1/litter', auth.required, (req,res) => {
   
   if(Object.keys(req.body).length === 0){
     res.status(400);
@@ -43,6 +49,74 @@ router.put('/api/v1/litter/:id', (req,res) => {
         res.status(404);
         res.send(err);});
   }
+});
+// log in
+router.post('/login', auth.optional, (req, res, next) => {
+  const { body: { user } } = req;
+
+  if(!user.userName) {
+    return res.status(422).json({
+      errors: {
+        userName: 'is required',
+      },
+    });
+  }
+
+  if(!user.password) {
+    return res.status(422).json({
+      errors: {
+        password: 'is required',
+      },
+    });
+  }
+
+  return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
+    if(err) {
+      return next(err);
+    }
+
+    if(passportUser) {
+      const user = passportUser;
+      user.token = passportUser.generateJWT();
+
+      return res.json({ user: user.toAuthJSON() });
+    }
+
+    return status(400).info;
+  })(req, res, next);
+});
+// create user (DO NOT USE IN PROD)
+router.post('/user', auth.optional, (req, res, next) => {
+  const { body: { user } } = req;
+  if(!user) {
+    return res.status(422).json({
+      errors: {
+        user: 'is required',
+      },
+    });
+  }
+  if(!user.userName) {
+    return res.status(422).json({
+      errors: {
+        userName: 'is required',
+      },
+    });
+  }
+
+  if(!user.password) {
+    return res.status(422).json({
+      errors: {
+        password: 'is required',
+      },
+    });
+  }
+
+  const finalUser = new Users(user);
+
+  finalUser.setPassword(user.password);
+
+  return finalUser.save()
+    .then(() => res.json({ user: finalUser.toAuthJSON() }));
 });
 
 export default router;
