@@ -131,12 +131,14 @@ function createAdminUser() {
       if(docs.length) {
         return;
       } else {
-        const adminUser = new Users({
-          userName: username,
-          password: password,
-        });
-        adminUser.setPassword(password);
-        adminUser.save();      
+        if(password) {
+          const adminUser = new Users({
+            userName: username,
+            password: password,
+          });
+          adminUser.setPassword(password);
+          adminUser.save();          
+        }
       }
     });
 }
