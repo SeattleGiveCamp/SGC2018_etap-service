@@ -10,6 +10,8 @@ var path = require('path');
 const router = express.Router();
 import litter from '../models/litter.js';
 
+createAdminUser();
+
 router.get('/api/v1/litter', (req,res) => {
   litter.find()
     .then( data => res.send(data))
@@ -109,8 +111,9 @@ router.post('/login', auth.optional, (req, res, next) => {
     return status(400).info;
   })(req, res, next);
 });
-// create user (DO NOT USE IN PROD)
-router.post('/user', auth.optional, (req, res, next) => {
+
+/* USER CREATE ENDPOINT- NOT FOR PROD!
+router.post('/user', auth.required, (req, res, next) => {
   const { body: { user } } = req;
   if(!user) {
     return res.status(422).json({
@@ -142,5 +145,26 @@ router.post('/user', auth.optional, (req, res, next) => {
   return finalUser.save()
     .then(() => res.json({ user: finalUser.toAuthJSON() }));
 });
+*/
+
+function createAdminUser() {
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
+  if(username)
+    Users.find({ userName: username }, function(err, docs) {
+      if(docs.length) {
+        return;
+      } else {
+        if(password) {
+          const adminUser = new Users({
+            userName: username,
+            password: password,
+          });
+          adminUser.setPassword(password);
+          adminUser.save();          
+        }
+      }
+    });
+}
 
 export default router;
