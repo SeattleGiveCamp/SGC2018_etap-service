@@ -63,7 +63,7 @@ router.post('/api/v1/litter', auth.required, (req,res) => {
       .catch(err=>console.log(err));
   }
 });
-router.put('/api/v1/litter/:id', (req,res) => {
+router.put('/api/v1/litter/:id', auth.required,(req,res) => {
   if(Object.keys(req.body).length === 0){
     res.status(400);
     res.send('Bad Request: Request body not received');
@@ -153,6 +153,7 @@ function createAdminUser() {
   if(username)
     Users.find({ userName: username }, function(err, docs) {
       if(docs.length) {
+        console.log('Existing user found');
         return;
       } else {
         if(password) {
@@ -161,7 +162,8 @@ function createAdminUser() {
             password: password,
           });
           adminUser.setPassword(password);
-          adminUser.save();          
+          adminUser.save(); 
+          console.log('user created successfully');         
         }
       }
     });
