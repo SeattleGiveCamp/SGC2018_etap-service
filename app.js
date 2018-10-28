@@ -3,7 +3,7 @@
 // Third Party Modules
 import express from 'express';
 //import morgan from 'morgan';
-//import cors from 'cors';
+import cors from 'cors';
 
 // Our modules
 import router from './api/api';
@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 //app.use(morgan());
-//app.use(cors);
+app.use(cors());
 // Our API
 app.use(router);
 let server = false;
